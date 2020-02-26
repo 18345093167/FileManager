@@ -18,7 +18,7 @@
 <body>
 	<div style= "display: inline;margin:0 auto">
 		<button type="button" onclick="startLogin()" class="buttonStyle" >登录</button>
-		<button type="button" onclick="startLogin()" class="buttonStyle" >注册</button>
+		<button type="button" onclick="startRegister()" class="buttonStyle" >注册</button>
 		<button type="button" onclick="checkLogin(this)" class="buttonStyle">上传文件夹</button>
 		<button type="button" onclick="checkLogin(this)" class="buttonStyle">多文件上传</button>
 		<button type="button" onclick="checkLogin(this)" class="buttonStyle" >在线预览</button>
@@ -72,6 +72,10 @@
 		{
 			startLogin();
 		}
+	}
+
+	function startRegister(){
+		window.location.href = window.location.protocol + '//' + window.location.host + "/register";
 	}
 
 	function clientDown(obj){
