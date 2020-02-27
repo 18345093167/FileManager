@@ -1,5 +1,6 @@
 package com.example.uploadingfiles;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -11,6 +12,7 @@ import com.example.uploadingfiles.storage.StorageService;
 
 @SpringBootApplication
 @EnableConfigurationProperties(StorageProperties.class)
+@MapperScan("com.example.uploadingfiles.mapper")
 public class UploadingFilesApplication {
 
 	public static void main(String[] args) {

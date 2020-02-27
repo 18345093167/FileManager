@@ -3,6 +3,8 @@ package com.example.uploadingfiles;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -53,12 +55,12 @@ public class FileUploadController {
 	}
 
 	@PostMapping("/")
-	public String handleFileUpload(@RequestParam("file") MultipartFile file,
+	public String handleFileUpload(HttpServletRequest request,@RequestParam("file") MultipartFile file,
 			RedirectAttributes redirectAttributes) {
 
 		storageService.store(file);
-		redirectAttributes.addFlashAttribute("message",
-				"您成功上传了文件 " + file.getOriginalFilename() + "!");
+		redirectAttributes.addFlashAttribute("message","您的ip地址是"+request.getRemoteAddr()+
+				",您成功上传了文件 " + file.getOriginalFilename() + "!");
 
 		return "redirect:/";
 	}

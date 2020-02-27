@@ -23,6 +23,17 @@ dependencies {
 	compile group: 'org.webjars.bower', name: 'fontawesome', version: '4.7.0'
 	// https://mvnrepository.com/artifact/org.webjars.bower/bootstrap-fileinput
 	compile group: 'org.webjars.bower', name: 'bootstrap-fileinput', version: '5.0.7'
+	// https://mvnrepository.com/artifact/mysql/mysql-connector-java
+	// https://mvnrepository.com/artifact/org.mybatis.spring.boot/mybatis-spring-boot-starter
+	compile group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '2.1.1'
+	// https://mvnrepository.com/artifact/org.eclipse.persistence/javax.persistence
+	compile group: 'org.eclipse.persistence', name: 'javax.persistence', version: '2.2.1'
+	// https://mvnrepository.com/artifact/com.alibaba/druid
+	compile group: 'com.alibaba', name: 'druid', version: '1.1.12'
+	// https://mvnrepository.com/artifact/mysql/mysql-connector-java
+	compile group: 'mysql', name: 'mysql-connector-java', version: '5.1.39'
+
+
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
 	}
