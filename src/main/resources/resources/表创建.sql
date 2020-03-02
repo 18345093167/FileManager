@@ -11,3 +11,5 @@ CREATE TABLE `pub_users` (
 	`isLogin` char(1) NOT NULL,
   PRIMARY KEY (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+--修改表结构类型--
+alter table pub_users modify column login_time varchar(19)

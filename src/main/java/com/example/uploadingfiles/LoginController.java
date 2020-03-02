@@ -14,7 +14,6 @@ import com.example.uploadingfiles.data.UserEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -27,16 +26,34 @@ public class LoginController {
     @Autowired
     private ILoginService loginService;
 
+    @Autowired
+    private HttpServletRequest request;
+
     @RequestMapping(value = "/toLogin", method = RequestMethod.POST)
     public String toLogin(@RequestParam(value = "username") String username,
             @RequestParam(value = "password") String password, Map<String, Object> map, HttpSession session) {
-
-        if (!StringUtils.isEmpty(username) && username.equals("burning") && "123456".equals(password)) {
-            session.setAttribute("loginUser", username);
-            return "test";
-        } else {
-            map.put("msg", "用户名或密码错误");
+        if (!loginService.checkUser(username)){
+            map.put("msg", "当前用户不存在,请您先注册");
             return "index";
+        }else{
+            if (loginService.checkUserAndPasswd(username,password)){
+                session.setAttribute("loginUser", username);
+                String loginTime = null;
+                SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                loginTime = formatter.format( new Date(System.currentTimeMillis()));
+                //只有登录时候的状态是1 登出或注册都是0
+                boolean isLogin = true;
+                UserEntity user = new UserEntity();
+                user.setLoginIp(request.getRemoteAddr());
+                user.setIsLogin(isLogin);
+                user.setLoginTime(loginTime);
+                user.setUserName(username);
+                loginService.update(user);
+                return "test";
+            } else {
+                map.put("msg", "用户名或密码错误");
+                return "index";
+            }
         }
     }
 
@@ -48,11 +65,10 @@ public class LoginController {
         String ip = request.getRemoteAddr();
         String userId  = UUID.randomUUID().toString().replace("-","");
         Date loginOutTime = null;
-       /* SimpleDateFormat formatter= new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss z");
-        Date date = new Date(System.currentTimeMillis());
+       /* 
         //System.out.println(formatter.format(date));
         System.out.println("用户是"+email+userName+passWd+ip+userId+loginOutTime);*/
-        Date loginTime = null;
+        String loginTime = null;
         boolean isLogin = false;
         UserEntity user = new UserEntity();
         user.setLoginIp(ip);
@@ -63,7 +79,6 @@ public class LoginController {
         user.setUserName(userName);
         user.setUserPasswd(passWd);
         user.setIsLogin(isLogin);
-
         loginService.add(user);
         return "redirect:/login";
 

@@ -20,7 +20,7 @@ public class UserEntity {
     private String userPassword;
     //登录时间
     @Column(name="login_time")
-    private Date loginTime;
+    private String loginTime;
     //登录Ip
     @Column(name="login_ip")
     private String loginIp;
@@ -61,10 +61,10 @@ public class UserEntity {
 	public void setUserPasswd(String userPasswd) {
 		this.userPassword = userPasswd;
 	}
-	public Date getLoginTime() {
+	public String getLoginTime() {
 		return loginTime;
 	}
-	public void setLoginTime(Date loginTime) {
+	public void setLoginTime(String loginTime) {
 		this.loginTime = loginTime;
 	}
 	public String getLoginIp() {

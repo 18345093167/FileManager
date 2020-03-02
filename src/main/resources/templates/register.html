@@ -34,7 +34,7 @@
       
       <p style="color: red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
       <label class="sr-only" th:text="#{register.username}">Username</label>
-      <input type="text" name="username" class="form-control" th:placeholder="#{register.username}" required  autofocus>
+      <input type="text" name="username" class="form-control" th:placeholder="#{register.username}"  onblur="checkNameOnly(this)" required  autofocus>
       <br/>
       <label for="inputPassword" class="sr-only" th:text="#{register.password}">Password</label>
       <input type="password" name="password1" id="inputPassword1" class="form-control" th:placeholder="#{register.password}" required>
@@ -59,6 +59,31 @@ function checkPassword(obj){
       }
       return true;
 }
+
+//判断用户名是否唯一
+function checkNameOnly(obj){
+ // alert("OK");
+        /* $.ajax({
+             type: "GET",
+             url: "test.json",
+             data: {username:obj.value},
+             dataType: "String",
+             success: function(data){
+                         $('#resText').empty();   //清空resText里面的所有内容
+                         var html = ''; 
+                         $.each(data, function(commentIndex, comment){
+                               html += '<div class="comment"><h6>' + comment['username']
+                                         + ':</h6><p class="para"' + comment['content']
+                                         + '</p></div>';
+                         });
+                         $('#resText').html(html);
+                      }
+         });*/
+
+
+}
+
+//检测email格式
 function checkEmail(obj){
       console.log(obj.value);
       var  reg = new RegExp("^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$");

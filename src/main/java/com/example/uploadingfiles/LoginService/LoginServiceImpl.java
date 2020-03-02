@@ -18,5 +18,28 @@ public class LoginServiceImpl implements ILoginService {
 
     }
 
+    /**
+     * 检查用户名和密码
+     */
+    @Override
+    public boolean checkUserAndPasswd(String username, String password) {
+        UserEntity user =  userMapper.findItem(username,password);
+        return user != null;
+    }
+
+    /**
+     * 检查账户是否存在
+     */
+    @Override
+    public boolean checkUser(String username) {
+        UserEntity user =  userMapper.findUser(username);
+        return user != null;
+    }
+
+    @Override
+    public void update(UserEntity user) {
+        userMapper.update(user);
+    }
+
     
 }
