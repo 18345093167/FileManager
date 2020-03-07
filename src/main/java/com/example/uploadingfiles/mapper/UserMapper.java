@@ -8,6 +8,7 @@ import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.ResultMap;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -15,8 +16,16 @@ import org.apache.ibatis.annotations.Update;
 public interface UserMapper {
 	
 	@Select("SELECT * FROM pub_users where user_name = #{username,jdbcType=VARCHAR} and user_password = #{password,jdbcType=VARCHAR}")
+	@Results(id = "user",value = {  
+		@Result(property="userId",column="user_id"),
+		@Result(property="userName",column="user_name"),
+		@Result(property="userPassword",column="user_password"),
+		@Result(property="loginTime",column="login_time"),
+		@Result(property="loginIp",column="login_ip"),
+		@Result(property="loginOutTime",column="login_out_time"),
+		@Result(property="userEmail",column="user_email")
+	 })  
 	UserEntity findItem(@Param("username")String username, @Param("password")String password);
-
 
 	// @Select("SELECT * FROM pub_users WHERE user_id = #{id}")
 	// UserEntity getOne(Long id);
@@ -26,6 +35,7 @@ public interface UserMapper {
 	void insert(UserEntity user);
 
 	@Select("SELECT * FROM pub_users where user_name = #{username,jdbcType=VARCHAR}")
+	@ResultMap("user")
 	UserEntity findUser(@Param("username")String username);
 
 	@Update("UPDATE pub_users SET login_time=#{loginTime},isLogin=#{isLogin} WHERE user_name =#{userName}")

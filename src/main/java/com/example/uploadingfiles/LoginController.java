@@ -17,6 +17,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -57,6 +58,14 @@ public class LoginController {
         }
     }
 
+    @RequestMapping(value = "/toCheckUser", method = RequestMethod.POST)
+    @ResponseBody
+    public String toCheck(@RequestParam(value = "username") String username) {
+        boolean result = loginService.checkUser(username);
+        return result == true ? username : "have not registered not yet";
+
+    }
+
     @RequestMapping(value = "/toRegister", method = RequestMethod.POST)
     public String toRegister(HttpServletRequest request,RedirectAttributes redirectAttributes) {
         String email = request.getParameter("email");
@@ -65,9 +74,6 @@ public class LoginController {
         String ip = request.getRemoteAddr();
         String userId  = UUID.randomUUID().toString().replace("-","");
         Date loginOutTime = null;
-       /* 
-        //System.out.println(formatter.format(date));
-        System.out.println("用户是"+email+userName+passWd+ip+userId+loginOutTime);*/
         String loginTime = null;
         boolean isLogin = false;
         UserEntity user = new UserEntity();

@@ -28,59 +28,71 @@
     <link th:href="@{assert/css/signin.css}" rel="stylesheet">
   </head>
   <body class="text-center">
-    <form method="post" class="form-signin" th:action="@{/toRegister}" >
+    <form method="post" class="form-signin" th:action="@{/toRegister}" onsubmit = "return checkForm()">
       <img class="mb-4" th:src="@{/assert/image/bootstrap-solid.svg}" alt="" width="72" height="72">
       <h1 class="h3 mb-3 font-weight-normal" th:text="#{register.tip}">Please register in</h1>
       
       <p style="color: red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
+      <!--sr-only 是给屏幕阅读器用的，是给视力不方便的用户在使用屏幕阅读器时方便查看的。-->
       <label class="sr-only" th:text="#{register.username}">Username</label>
-      <input type="text" name="username" class="form-control" th:placeholder="#{register.username}"  onblur="checkNameOnly(this)" required  autofocus>
+      <input type="text" name="username" class="form-control" th:placeholder="#{register.username}"  onblur="checkNameOnly(this)" required  autofocus/>
+      <span id = "userAppend" style="color: red"></span>
       <br/>
       <label for="inputPassword" class="sr-only" th:text="#{register.password}">Password</label>
       <input type="password" name="password1" id="inputPassword1" class="form-control" th:placeholder="#{register.password}" required>
       <label for="inputPassword" class="sr-only" th:text="#{register.repassword}">Password</label>
       <input type="password" name="password2" id="inputPassword2" class="form-control" th:placeholder="#{register.repassword}"  onblur="checkPassword(this)" required>
+      <span id = "password2Append" style="color: red"></span>
       <label for="inputEmail" class="sr-only" th:text="#{register.email}" >Email</label>
       <input type="text" name="email" class="form-control" th:placeholder="#{register.email}"  onblur="checkEmail(this)" required >
+      <span id = "emailAppend" style="color: red"></span>
       <br/>
       <button class="btn btn-lg btn-primary btn-block" type="submit" th:text="#{register.btn}">Sign in</button>
       <p class="mt-5 mb-3 text-muted">&copy; 2020-2021</p>
   </form>
 </body>
 <script>
-
+//检测form表单能否提交
+var formCanSubmit = true;
 function checkPassword(obj){
       var pass1 = $("#inputPassword1").val();
       var pass2 = obj.value;
       if (pass1 != pass2){
-          alert("两次输入的密码不一致，请重新输入");
-          obj.focus();
-          return false;
+        $("#password2Append").show();
+        $("#password2Append").html("");
+        $("#password2Append").append(" <b>两次输入的密码不一致，请重新输入</b>");
+        formCanSubmit = false;
+        obj.focus();
+        return false;
       }
+      $("#password2Append").hide();
+      formCanSubmit = true; 
       return true;
 }
 
-//判断用户名是否唯一
+//判断用户名是否唯一 
 function checkNameOnly(obj){
- // alert("OK");
-        /* $.ajax({
-             type: "GET",
-             url: "test.json",
+        $.ajax({
+             type: "POST",
+             url: "/toCheckUser",
+             async:false,
              data: {username:obj.value},
-             dataType: "String",
+             dataType:"text",
              success: function(data){
-                         $('#resText').empty();   //清空resText里面的所有内容
-                         var html = ''; 
-                         $.each(data, function(commentIndex, comment){
-                               html += '<div class="comment"><h6>' + comment['username']
-                                         + ':</h6><p class="para"' + comment['content']
-                                         + '</p></div>';
-                         });
-                         $('#resText').html(html);
-                      }
-         });*/
+               //如果返回NULL无法判断值  
+                if (data != "have not registered not yet"){
+                  $("#userAppend").show();
+                  $("#userAppend").html("");
+                  $("#userAppend").append(" <b>"+data +" 已经被注册</b>");
+                  formCanSubmit = false;
 
-
+                  obj.focus();
+                }else{
+                  $("#userAppend").hide();
+                  formCanSubmit = true; 
+                }
+              },           
+         });
 }
 
 //检测email格式
@@ -88,10 +100,21 @@ function checkEmail(obj){
       console.log(obj.value);
       var  reg = new RegExp("^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$");
       if (!reg.test(obj.value)){
-          obj.focus();
-          return false;
+        $("#emailAppend").show();
+        $("#emailAppend").html("");
+        $("#emailAppend").append(" <b>邮箱格式不正确，请重新输入</b>");
+        formCanSubmit = false;
+        obj.focus();
+        return false;
       }
+      $("#emailAppend").hide();
+      formCanSubmit = true; 
 	    return true;
+}
+
+//检测form表单能否提交
+function checkForm(){
+  return formCanSubmit;
 }
 </script>
 </html>

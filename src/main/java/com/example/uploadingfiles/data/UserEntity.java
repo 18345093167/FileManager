@@ -30,7 +30,7 @@ public class UserEntity {
     //用户名
     @Column(name="user_email")
 	private String userEmail;
-	//是否登录 不是登录就是注册
+	//是否登录 不是登录就是注册或者退出登录
 	@Column(name="isLogin")
 	private boolean isLogin;
 
