@@ -1,5 +1,6 @@
 package com.example.uploadingfiles;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.stream.Collectors;
 
@@ -15,12 +16,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBuilder;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.alibaba.fastjson.JSON;
 import com.example.uploadingfiles.storage.StorageFileNotFoundException;
 import com.example.uploadingfiles.storage.StorageService;
 
@@ -55,14 +58,42 @@ public class FileUploadController {
 	}
 
 	@PostMapping("/")
-	public String handleFileUpload(HttpServletRequest request,@RequestParam("file") MultipartFile file,
+	public String handleFileUpload(@RequestParam("file") MultipartFile file,
 			RedirectAttributes redirectAttributes) {
 
 		storageService.store(file);
-		redirectAttributes.addFlashAttribute("message","您的ip地址是"+request.getRemoteAddr()+
-				",您成功上传了文件 " + file.getOriginalFilename() + "!");
+		redirectAttributes.addFlashAttribute("message","您成功上传了文件 " + file.getOriginalFilename() + "!");
 
 		return "redirect:/";
+	}
+
+	@RequestMapping("/file-upload-single")
+	@ResponseBody
+	public String FileUploadSingle(@RequestParam("myFile") MultipartFile file, Model model) {
+
+				if (file.isEmpty()) {
+					return "上传失败，请选择文件";
+				}
+				String fileName = file.getOriginalFilename();
+		
+				File dest = null;
+				String os = System.getProperty("os.name");
+				System.out.println(os);
+				if (os.toLowerCase().startsWith("win")) {
+					String path = "D:"+File.separator+"img"+File.separator;
+					System.out.println(path);
+					dest= new File(path + fileName);
+				}else {
+					String path = "/webapps/img/";
+					dest= new File(path + fileName);
+				}
+				model.addAttribute("src","img/"+fileName);
+				try {
+					file.transferTo(dest);
+					return JSON.toJSONString("上传成功！");
+				} catch (IOException e) {
+					return JSON.toJSONString("上传失败！");
+				}
 	}
 
 	@ExceptionHandler(StorageFileNotFoundException.class)

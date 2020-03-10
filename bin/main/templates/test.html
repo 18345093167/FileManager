@@ -42,7 +42,7 @@
         </div>
         <div class="modal-body">
           <div class="file-loading">
-            <input id="input-b9" name="input-b9[]" multiple type="file">
+            <input id="myFile" name="myFile"  type="file">
           </div>
           <div id="kartik-file-errors"></div>
         </div>
@@ -61,12 +61,9 @@
 <script>
 
     $(document).ready(function() {
-        $("#input-b9").fileinput({
-            showPreview: false,
-            showUpload: false,
+        $("#myFile").fileinput({
             elErrorContainer: '#kartik-file-errors',
-            allowedFileExtensions: ["jpg", "png", "gif"]
-            //uploadUrl: '/site/file-upload-single'
+            uploadUrl: '/file-upload-single'
         });
     });
 
