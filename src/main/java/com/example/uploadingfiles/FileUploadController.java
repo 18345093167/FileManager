@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -24,6 +25,7 @@ import org.springframework.web.servlet.mvc.method.annotation.MvcUriComponentsBui
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.alibaba.fastjson.JSON;
+import com.example.uploadingfiles.common.FileUtils;
 import com.example.uploadingfiles.storage.StorageFileNotFoundException;
 import com.example.uploadingfiles.storage.StorageService;
 
@@ -69,8 +71,9 @@ public class FileUploadController {
 
 	@RequestMapping("/file-upload-single")
 	@ResponseBody
-	public String FileUploadSingle(@RequestParam("myFile") MultipartFile file, Model model) {
+	public  synchronized String FileUploadSingle(HttpServletRequest request,@RequestParam("myFile") MultipartFile file, Model model) {
 
+				
 				if (file.isEmpty()) {
 					return "上传失败，请选择文件";
 				}
@@ -79,19 +82,27 @@ public class FileUploadController {
 				File dest = null;
 				String os = System.getProperty("os.name");
 				System.out.println(os);
+				HttpSession session = request.getSession();
+				Object user = session.getAttribute("loginUser");
+
 				if (os.toLowerCase().startsWith("win")) {
-					String path = "D:"+File.separator+"img"+File.separator;
+					String path = "D:"+File.separator+user+File.separator+"img"+File.separator;
 					System.out.println(path);
+					FileUtils.createNewFile(path + fileName);
 					dest= new File(path + fileName);
 				}else {
-					String path = "/webapps/img/";
+					String path = "/opt/userFolder/"+user+"/";
+					System.out.println(path);
+					FileUtils.createNewFile(path + fileName);
 					dest= new File(path + fileName);
 				}
 				model.addAttribute("src","img/"+fileName);
 				try {
 					file.transferTo(dest);
+					System.out.println("上传成功！");
 					return JSON.toJSONString("上传成功！");
 				} catch (IOException e) {
+					System.out.println("上传失败！");
 					return JSON.toJSONString("上传失败！");
 				}
 	}
